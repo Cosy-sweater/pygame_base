@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pygame
 from pygame.locals import *
 from typing import Union
@@ -6,7 +8,7 @@ from typing import Union
 class Scene:
     id = 0
 
-    def __init__(self, nodes: tuple[*"Node"] = ()):
+    def __init__(self, nodes: tuple["Node"] = ()):
         self.app = None
         self._id = Scene.id
         Scene.id += 1
@@ -21,6 +23,7 @@ class Scene:
         return self._id
 
     def add_node(self, node: "Node"):
+        print(self.app)
         node.set_app(self.app)
         self.nodes.append(node)
 
@@ -29,6 +32,7 @@ class Scene:
         self.nodes.extend(nodes)
 
     def set_app(self, app: "App"):
+        print(self.app)
         self.app = app
 
     def update(self, events, dt):
@@ -70,8 +74,8 @@ class App:
     def add_scene(self, scene: Scene):
         if type(scene) is not Scene:
             raise TypeError("Can not add not Scene object to app scenes")
+        scene.set_app(self)
         self._scenes.append(scene)
-        self._scenes[-1].set_app(self)
 
     def set_scene(self, scene_id: int):
         for item in self._scenes:

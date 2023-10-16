@@ -27,7 +27,7 @@ class Text(Node):
                 return item
         sys.stderr.write(f"No Text object found with id({obj_id})\n")
 
-    def __init__(self, text: str, pos: (int, int) = (0, 0), /, font: Union[pygame.font, str] = None,
+    def __init__(self, text: str, pos: (int, int) = (0, 0), font: Union[str] = None,
                  font_size: int = 16, font_color: (int, int, int) = (0, 0, 0),
                  anchor="topleft", **other):
         self.app = None
@@ -39,13 +39,16 @@ class Text(Node):
         self.font = font if type(font) is pygame.font else pygame.font.SysFont(font, font_size)
         self.font_size = font_size
         self.font_color = font_color
+        self.pos = pos
 
         self.text_surface = self.font.render(self.text, False, self.font_color)
         self.rect = self.text_surface.get_rect()
-        self.rect.move_ip(*pos)
+        self.rect = self.rect.move(*self.pos)
 
     def update_object(self):
-        pass
+        self.text_surface = self.font.render(self.text, False, self.font_color)
+        self.rect = self.text_surface.get_rect()
+        self.rect.move_ip(*self.pos)
 
     def draw(self) -> None:
         self.app.screen.blit(self.text_surface, self.rect)
