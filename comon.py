@@ -2,18 +2,17 @@ from __future__ import annotations
 
 import pygame
 from pygame.locals import *
-from typing import Union
 
 
 class Scene:
     id = 0
 
-    def __init__(self, nodes: tuple["Node"] = ()):
-        self.app = None
+    def __init__(self, app: App, nodes: tuple["Node"] = ()):
+        self.app = app
         self._id = Scene.id
         Scene.id += 1
 
-        self.nodes = []
+        self.__nodes = []
         self.add_nodes(nodes)
 
     def get_info(self) -> dict:
@@ -23,22 +22,16 @@ class Scene:
         return self._id
 
     def add_node(self, node: "Node"):
-        print(self.app)
-        node.set_app(self.app)
-        self.nodes.append(node)
+        self.__nodes.append(node)
 
     def add_nodes(self, nodes: list | tuple["Node"]):
-        [node.set_app(self.app) for node in nodes]
-        self.nodes.extend(nodes)
-
-    def set_app(self, app: "App"):
-        print(self.app)
-        self.app = app
+        self.__nodes.extend(nodes)
 
     def update(self, events, dt):
-        for node in self.nodes:
-            node.update(dt)
-        for node in self.nodes:
+        self.app.screen.fill((127, 127, 127))
+        for node in self.__nodes:
+            node.update(events, dt)
+        for node in self.__nodes:
             node.draw()
 
 
@@ -51,6 +44,8 @@ class App:
 
         pygame.init()
         self.screen = pygame.display.set_mode((200, 100))
+
+        self._fps = 0
 
     def run(self):
         fps = 90
@@ -67,14 +62,17 @@ class App:
 
             pygame.display.flip()
             deltaTime = clock.tick(fps)
-
+            self._fps = clock.get_fps()
 
         pygame.quit()
+
+    def get_fps(self):
+        return self._fps
+
 
     def add_scene(self, scene: Scene):
         if type(scene) is not Scene:
             raise TypeError("Can not add not Scene object to app scenes")
-        scene.set_app(self)
         self._scenes.append(scene)
 
     def set_scene(self, scene_id: int):
@@ -98,11 +96,8 @@ class App:
 
 
 class Node:
-    def update(self, *args) -> None:
+    def update(self, events, dt) -> None:
         pass
 
     def draw(self) -> None:
         pass
-
-    def set_app(self, app):
-        self.app = app
