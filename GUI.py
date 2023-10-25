@@ -27,10 +27,9 @@ class Text(Node):
                 return item
         sys.stderr.write(f"No Text object found with id({obj_id})\n")
 
-    def __init__(self, app: App, text: str = "", pos: (int, int) = (0, 0), font: Union[str] = None,
+    def __init__(self, text: str = "", pos: (int, int) = (0, 0), font: Union[str] = None,
                  font_size: int = 16, font_color: (int, int, int) = (0, 0, 0),
                  anchor="topleft", **other):
-        self.app = app
         self.id = Text.id
         Text.id += 1
         Text.text_objects.append(self)
@@ -86,9 +85,8 @@ class Button(Node):
                 return item
         sys.stderr.write(f"No Button object found with id({obj_id})\n")
 
-    def __init__(self, app: App, text: Text = "", pos: (int, int) = (0, 0), surface: pygame.Surface = None,
+    def __init__(self,text: Text = "", pos: (int, int) = (0, 0), surface: pygame.Surface = None,
                  anchor="topleft", text_anchor="center", command=lambda *_: None):
-        self.app = app
         self.id = Button.id
         Button.id += 1
         Button.button_objects.append(self)
@@ -103,7 +101,7 @@ class Button(Node):
             raise TypeError("Button only takes Text objects as text argument")
         self.command = command
 
-        self.rect = None
+        self.rect: pygame.Rect = None
         self.update_object()
 
     def update_object(self):
@@ -121,3 +119,14 @@ class Button(Node):
     def draw(self) -> None:
         self.app.screen.blit(self.surface, self.rect)
         self.text.draw()
+
+
+class BGPlate(Node):
+    def __init__(self, pos: tuple[int, int], size: tuple[int, int], color: tuple[int, int, int], alpha: int=255):
+        self.rect = pygame.Rect(pos, size)
+        self.surface = pygame.Surface(size)
+        self.surface.fill(color)
+        self.surface.set_alpha(alpha)
+
+    def draw(self):
+        self.app.screen.blit(self.surface, self.rect)

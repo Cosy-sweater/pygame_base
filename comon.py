@@ -69,7 +69,6 @@ class App:
     def get_fps(self):
         return self._fps
 
-
     def add_scene(self, scene: Scene):
         if type(scene) is not Scene:
             raise TypeError("Can not add not Scene object to app scenes")
@@ -96,8 +95,15 @@ class App:
 
 
 class Node:
+    @classmethod
+    def set_app(cls, a: App):
+        cls.app = a
+
     def update(self, events, dt) -> None:
         pass
 
     def draw(self) -> None:
+        pass
+
+    def draw_other_info(self) -> None:
         pass
