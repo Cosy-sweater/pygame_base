@@ -99,7 +99,7 @@ class Node:
     def set_app(cls, a: App):
         cls.app = a
 
-    def update(self, events, dt) -> None:
+    def update(self, dt) -> None:
         pass
 
     def draw(self) -> None:
@@ -107,3 +107,20 @@ class Node:
 
     def draw_other_info(self) -> None:
         pass
+
+
+class AnimationController(Node):
+    def __init__(self):
+        self.time_counters = {}
+
+    def update(self, dt) -> None:
+        for key in self.time_counters.keys():
+            current = self.time_counters[key]
+            new_time = current - dt
+            if new_time <= 0:
+                current["class"].get_by_id(current["id"]).do_sth_idk() # idk have no idea(((
+            else:
+                current["time"] = new_time
+            self.time_counters[key] = current
+
+

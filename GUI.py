@@ -111,7 +111,7 @@ class Button(Node):
         exec(f"self.rect.{self.anchor} = self.pos")
         exec(f"self.text.rect.{self.text_anchor} = self.rect.{self.text_anchor}")
 
-    def update(self, events, dt) -> None:
+    def update(self, dt) -> None:
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(pygame.mouse.get_pos()):
                 exec(self.command)
